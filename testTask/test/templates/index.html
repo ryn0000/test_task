@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lan="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TestIndex</title>
+
+        <script src="https://api-maps.yandex.ru/2.1/?apikey=ff9da0bd-0a91-4c76-b621-b66a83afae66&lang=tr_TR" type="text/javascript">
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            ymaps.ready(init);
+            function init(){ 
+
+                // get user cordinates
+                myVar= '{{data|tojson}}';
+                var obj= JSON.parse(myVar)
+                cordinatX=obj.cordiX
+                cordinatY=obj.cordiY
+
+
+                ymaps.geocode('Moscow').then(function (res) {
+                   
+                    // Coordinates of mkad.  
+                    var moscowCoords = [55.76, 37.64]
+                    // Coordinates of target.
+                    ymaps.geocode('Target').then(function (res) {
+                    var newYorkCoords = [cordinatX,cordinatY]
+
+                    // Distance calculators
+                    dd0=ymaps.formatter.distance(
+                        ymaps.coordSystem.geo.getDistance(moscowCoords, newYorkCoords)
+                    );
+
+                    alert(cordinatX+",  "+ cordinatY+ "  to MKAD "+dd0);
+
+                    console.log(cordinatX+",  "+ cordinatY+"to MKAD "+dd0);
+                    
+                    //HTTP request for send distace python app
+                    const URL ='/dis'
+                    const xhr = new XMLHttpRequest();
+                    sender= JSON.stringify(dd0)
+                    xhr.open('POST',URL);
+                    xhr.send(sender);
+                    
+                    
+
+
+                });
+            });
+                
+
+
+
+            }
+            
+        </script>
+        
+    </head>
+
+
+    <body>
+
+    
+    </body>
+</html>
+
+
